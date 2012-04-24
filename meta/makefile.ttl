@@ -1,0 +1,23 @@
+# This file provides instructions for packaging.
+
+@prefix : <http://purl.org/NET/cpan-uri/terms#> .
+
+<http://purl.org/NET/cpan-uri/dist/Between/project>
+	:perl_version_from _:main ;
+	:version_from _:main ;
+	:readme_from _:main ;
+	:requires
+		"strict",
+		"warnings",
+		"utf8",
+		"constant",
+		"overload",
+		"base",
+		"Exporter",
+		"Carp",
+		"Data::Dumper",
+		"Scalar::Util";
+	:test_requires "Test::More 0.61"  .
+
+_:main <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName> "lib/Between.pm" .
+

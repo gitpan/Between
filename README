@@ -1,0 +1,155 @@
+NAME
+    Between - simple range objects for smart matching
+
+SYNOPSIS
+     use Between;
+     use Math::Trig qw(pi);
+ 
+     if ( pi ~~between(3,4) ) {
+        say "This is to be expected.";
+     }
+
+DESCRIPTION
+    This module is designed to make common range-testing constructions a
+    little bit easier. Instead of this:
+
+     if (18 <= $person->age and $person->age <= 70) {
+        ...
+     }
+
+    You would write this:
+
+     if ( $person->age ~~between(18,70) ) {
+        ...
+     }
+
+    The latter is more readable, and in some cases (if the "age" method call
+    were computationally expensive) more efficient.
+
+  Functional Interface
+    "between($start, $end)"
+        This is a shortcut for the constructor (see the section below
+        describing the object-oriented interface).
+
+  Object-Oriented Interface
+    "Between->new($start, $end)"
+        Creates a new Between object, representing a range between $start
+        and $end (inclusive).
+
+        A third argument is allowed, a number interpreted as bit flags,
+        which allows $start and $end to be treated exclusively instead of
+        inclusively.
+
+         $range = Between->new(0, 1, EXCLUSIVE_START);
+         $range = Between->new(0, 1, EXCLUSIVE_START | EXCLUSIVE_END);
+
+        A fourth parameter may be provided, indicating if numeric or string
+        comparisons should be used. By default, the comparison type is
+        guessed.
+
+         $range = Between->new(0, 1, undef, '<=>');  # numeric
+         $range = Between->new(0, 1, undef, 'cmp');  # string
+
+    "start"
+        This method returns the start of the range.
+
+    "end"
+        This method returns the end of the range.
+
+    "start_is_exclusive"
+        This method returns true iff the start of the range is exclusive.
+
+    "end_is_exclusive"
+        This method returns true iff the end of the range is exclusive.
+
+    "type"
+        The (possibly automatically detected) comparison type. Either 'cmp'
+        or '<=>'.
+
+    "to_string"
+        A printable string representation for this range.
+
+    "cmp"
+        Equivalent to the Perl "cmp" operator.
+
+          $range->cmp($value)
+
+        will return 1 if $value is less than "$range->start"; return 0 if
+        $value is within the range; and return -1 if <$value> is greater
+        than "$range->end". It takes into account the inclusive/exclusive
+        flags.
+
+    "cmp_numeric"
+        Like "cmp", but always does numeric comparison.
+
+    "cmp_string"
+        Like "cmp", but always does string comparison.
+
+    "match"
+        Returns a boolean opposite to "cmp". That is, the following returns
+        true if and only if $value is within the range:
+
+          $range->match($value)
+
+  Constants
+    *   EXCLUSIVE_START 0x01
+
+    *   EXCLUSIVE_END 0x02
+
+    *   CMP_NUMERIC '<=>'
+
+    *   CMP_STRING 'cmp'
+
+    *   CMP_AUTO "undef"
+
+    Constants are not exported by default, but can be exported using the
+    ':constants' or ':all' export tags.
+
+     use Between qw(:constants);
+
+  Overloading
+    The Between module overloads the following operations:
+
+    *   "~~" (smart match) via "match".
+
+    *   "" (stringification) via "to_string".
+
+    *   "cmp" (string comparison), "lt", "gt", "le", "ge", "eq", "ne" via
+        "cmp_string".
+
+    *   "<=>" (numeric comparison), "<", ">", "<=", ">=", "==", "!=" via
+        "cmp_numeric".
+
+  Export
+    The following export tags are defined:
+
+    *   ":standard" - exports the "between" function only.
+
+    *   ":constants" - exports "EXCLUSIVE_START", "EXCLUSIVE_END",
+        "CMP_NUMERIC", "CMP_STRING" and "CMP_AUTO".
+
+    *   ":all" - combines ":standard" and ":constants".
+
+    By default, the ":standard" tag is exported.
+
+BUGS
+    Please report any bugs to
+    <http://rt.cpan.org/Dist/Display.html?Queue=Between>.
+
+SEE ALSO
+    Object::Range.
+
+AUTHOR
+    Toby Inkster <tobyink@cpan.org>.
+
+COPYRIGHT AND LICENCE
+    This software is copyright (c) 2012 by Toby Inkster.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+
+DISCLAIMER OF WARRANTIES
+    THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+    WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+    MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
